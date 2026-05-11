@@ -10,6 +10,10 @@ def hash_text(text: str) -> str:
 class Base(DeclarativeBase):
     pass
 
+
+engine = create_engine("sqlite:///mydb.sqlite3", echo=True)
+Base.metadata.create_all(engine)
+
 class User(Base):
     __tablename__ = 'user'
 
@@ -17,12 +21,9 @@ class User(Base):
         self.username = Column(String, primary_key=True)
         self.password = Column(String)
 
-engine = create_engine("sqlite:///mydb.sqlite3", echo=True)
-
 
 
 SessionLocal = sessionmaker(bind=engine)
 
-Base.metadata.create_all(engine)
 
 print(text2art("MyFinances", font='block'))
