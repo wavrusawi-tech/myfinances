@@ -26,43 +26,47 @@ Base.metadata.create_all(engine)
 
 SessionLocal = sessionmaker(bind=engine)
 session = SessionLocal()
-logged_in = False
 print(text2art("MyFinances"))
-print("Please log in or create a new user")
-choice = int(input("[1: Login, 2: Register]"))
+print("Press Ctrl-C to quit any time.")
 
-if choice == 1:
-    login_username = input('Username: ')
-    login_password = input('Password: ')
-    matching_db_user = session.query(User).filter_by(username=login_username).first()
+try:
+    while True:
+        print("\nPlease log in or create a new user")
+        choice = input("[1: Login, 2: Register] ").strip()
 
-    if matching_db_user and matching_db_user.password == hash_text(login_password):
-        print(f"Welcome back, {login_username}!")
-        logged_in = True
+        if choice == "1":
+            login_username = input('Username: ')
+            login_password = input('Password: ')
+            matching_db_user = session.query(User).filter_by(username=login_username).first()
 
-    else:
-        print("Invalid username or password.")
+            if matching_db_user and matching_db_user.password == hash_text(login_password):
+                print(f"Welcome back, {login_username}!")
+            else:
+                print("Invalid username or password.")
 
-elif choice == 2:
-    register_username = input('Choose a username: ')
-    existing_user = session.query(User).filter_by(username=register_username).first()
+        elif choice == "2":
+            register_username = input('Choose a username: ')
+            existing_user = session.query(User).filter_by(username=register_username).first()
 
-    if existing_user:
-        print("That username is already taken. Please try again.")
-    else:
-        register_password = input('Choose a password: ')
-        confirm_password = input('Confirm password: ')
+            if existing_user:
+                print("That username is already taken. Please try again.")
+            else:
+                register_password = input('Choose a password: ')
+                confirm_password = input('Confirm password: ')
 
-        if register_password != confirm_password:
-            print("Passwords do not match.")
+                if register_password != confirm_password:
+                    print("Passwords do not match.")
+                else:
+                    new_user = User(username=register_username, password=hash_text(register_password))
+                    session.add(new_user)
+                    session.commit()
+                    print(f"User '{register_username}' registered successfully!")
+
         else:
-            new_user = User(username=register_username, password=hash_text(register_password))
-            session.add(new_user)
-            session.commit()
-            print(f"User '{register_username}' registered successfully!")
+            print("Invalid choice. Please choose 1 or 2.")
 
-else:
-    print("Invalid choice. Please run the program again and choose 1 or 2.")
-
-session.close()
+except KeyboardInterrupt:
+    print("\nGoodbye!")
+finally:
+    session.close()
 
