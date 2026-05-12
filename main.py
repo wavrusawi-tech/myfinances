@@ -11,7 +11,7 @@ class Base(DeclarativeBase):
     pass
 
 
-engine = create_engine("sqlite:///mydb.sqlite3", echo=True)
+engine = create_engine("sqlite:///mydb.sqlite3", echo=False)
 
 
 class User(Base):
