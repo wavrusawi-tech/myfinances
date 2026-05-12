@@ -1,7 +1,8 @@
 from art import text2art
 import hashlib
 from sqlalchemy import Column, String, create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker, session
+
 
 def hash_text(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
@@ -26,3 +27,12 @@ Base.metadata.create_all(engine)
 SessionLocal = sessionmaker(bind=engine)
 
 print(text2art("MyFinances", font='block'))
+print("Please log in or create a new user")
+choice = int(input("[1: Login, 2: Register]"))
+if choice == 1:
+    all_users = session.query(User).all()
+    login_username = input('Username:')
+    login_password = input('Password:')
+    login_hashed_password = hash_text(login_password)
+    matching_db_user = session.query(User).filter_by(username=login_username1).first()
+
